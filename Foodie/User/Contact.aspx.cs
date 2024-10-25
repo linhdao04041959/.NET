@@ -13,5 +13,36 @@ namespace Foodie.User
         {
 
         }
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                con = new SqlConnection(Connection.GetConnectionString());
+                cmd = new SqlCommand("ContactSp", con);
+
+                cmd.Parameters.AddWithValue("@Action", "INSERT");
+                cmd.Parameters.AddWithValue("@Name", txtName.Text.Trim());
+                cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
+                cmd.Parameters.AddWithValue("@Subject", txtSubject.Text.Trim());
+                cmd.Parameters.AddWithValue("@Message", txtMessage.Text.Trim());
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+
+                lblMsg.Visible = true;
+                lblMsg.Text = "Thanks for reaching out will look into your query!";
+                lblMsg.CssClass = "alert alert-success";
+                clear();
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('" + ex.Message + "');</script>");
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
     }
 }
